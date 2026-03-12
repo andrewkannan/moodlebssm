@@ -1,11 +1,17 @@
-FROM moodlehq/moodle-php-apache:8.2
+FROM php:8.2-apache
+
+RUN apt-get update && apt-get install -y \
+    git unzip libpng-dev libjpeg-dev libfreetype6-dev \
+    libzip-dev libicu-dev libxml2-dev libonig-dev
+
+RUN docker-php-ext-install \
+    mysqli pdo pdo_mysql intl zip gd soap opcache
+
+RUN a2enmod rewrite
 
 WORKDIR /var/www/html
 
-RUN apt-get update && apt-get install -y \
-    git unzip
-
-COPY . /var/www/html
+RUN git clone https://github.com/moodle/moodle.git .
 
 RUN chown -R www-data:www-data /var/www/html
 
